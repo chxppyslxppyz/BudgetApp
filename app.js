@@ -62,15 +62,100 @@ submitExpenseForm() {
         </p>`;  
         const self = this; 
     }
+else{
+    let amount= parseInt(aValue);
+    this.eInput.value = ""; 
+    this.aInput.value = ""; 
+
+let expense = {
+    id:this.itemID, 
+    title:eValue, 
+    amount:amount, 
+}
+this.itemID++; 
+this.itemList.push(expense);
+this.aExpense(expense); 
+this.sBalance(); 
+
+    }
+}
+// add expense 
+aExpense(expense){
+    const div = document.createElement('div'); 
+    div.classList.add('expense');
+    div.innerHTML = `
+    <div class="expense-item d-flex justify-content-between align-items-baseline">
+         <h6 class="expense-title mb-0 text-uppercase list-item">- ${
+             expense.title}
+         </h6>
+         
+         <h5 class="expense-amount mb-0 list-item">${expense.amount}
+         </h5>
+         
+         <div class="expense-icons list-item">
+          <a href="#" class="edit-icon mx-2" data-id="${expense.id}">
+           <i class="fas fa-edit"></i>
+          </a>
+         
+          <a href="#" class="delete-icon" data-id="${expense.id}">
+           <i class="fas fa-trash"></i>
+          </a>
+         
+          </div>
+        </div>
+       </div>
+    `; 
+this.eList.appendChild(div); 
 }
 
 // tExpense part
 tExpense(){
-    let total = 10000; 
-    return total; 
+    let total = 0; 
+    if(this.itemList.length > 0){
+total = this.itemList.reduce(function(theTotal, theCurrent){
+                theTotal += theCurrent.amount
+return theTotal; 
+}, 0);  
 }
-}
+this.eAmount.textContent = total; 
+return total; 
+    } // edit 
+    editExpense(element){
+let id = parseInt(element.dataset.id);
+let parent = element.parentElement.parentElement.parentElement; 
+// remove from "DOM"? - Document Object Model
+this.eList.removeChild(parent); 
+// remove from list   
+let expense = this.itemList.filter(function(item){
+return item.id === id; 
+}); 
+// show value 
+this.eInput.value = expense[0].title; 
+this.aInput.value = expense[0].amount; 
+// remove from list 
+let temporaryList = this.itemList.filter(function(item){
+return item.id !==id; 
+});
 
+this.itemList = temporaryListList; 
+this.sBalance();
+    }
+// delete expense 
+deleteExpense(element){
+    let id = parseInt(element.dataset.id);
+let parent = element.parentElement.parentElement.parentElement; 
+// remove from "DOM"? - Document Object Model
+this.eList.removeChild(parent); 
+// remove from list   
+// remove from list 
+let temporaryList = this.itemList.filter(function(item){
+    return item.id !==id; 
+    })
+    
+    this.itemList = temporaryListList; 
+    this.sBalance();
+}
+}
 
 function eventListeners(){
 const bForm = document.getElementById('budget-form')
@@ -93,8 +178,18 @@ ui.submitExpenseForm();
 }); 
 
 // expense click 
-eList.addEventListener('click!', function() {});
+eList.addEventListener("click!", function(event){
+    if(event.target.parentElement.classList.contains('edit-icon')){
+ui.editExpense(event.target.parentElement)
+    }
+    else if(event.target.parentElement.classList.contains('delete-icon')){
+        ui.editExpense(event.target.parentElement)
+    }
+});
+
+
+
 document.addEventListener('DOMContentLoaded', function(){
- 
-})
+ eventListeners(); 
+}); 
 
